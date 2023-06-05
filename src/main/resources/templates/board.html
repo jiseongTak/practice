@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>게시판 상세</title>
+  <style>
+    .board-detail {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .board-detail-label {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>게시판 상세</h1>
+  <div class="board-detail">
+    <span class="board-detail-label">번호:</span>
+    <span th:text="${board.id}"></span>
+  </div>
+  <div class="board-detail">
+    <span class="board-detail-label">제목:</span>
+    <span th:text="${board.title}"></span>
+  </div>
+  <div class="board-detail">
+    <span class="board-detail-label">내용:</span>
+    <span th:text="${board.content}"></span>
+  </div>
+
+  <a th:href="@{/list}">목록으로 돌아가기</a>
+  <br>
+  <a th:href="@{/modify(id=${board.id})}">수정하러 가기</a>
+  <br>
+  <form th:action="@{/remove}" method="post">
+    <input type="hidden" name="id" th:value="${board.id}">
+    <button type="submit">삭제</button>
+  </form>
+
+</body>
+</html>
