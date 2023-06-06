@@ -17,12 +17,12 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
 
-    public Page<Board> searchBoardsByKeyword(String keyword, Pageable pageRequest) {
+    public Page<Board> searchBoardsByKeyword(String keyword, Pageable pageable) {
         log.info("BoardService searchBoardsByKeyword keyword >> {}", keyword);
         if (ObjectUtils.isEmpty(keyword)) {
-            return boardRepository.findAll(pageRequest);
+            return boardRepository.findAll(pageable);
         } else {
-            return boardRepository.findByTitleContaining(keyword, pageRequest);
+            return boardRepository.findByTitleContaining(keyword, pageable);
         }
     }
 }

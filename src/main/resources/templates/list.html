@@ -70,28 +70,20 @@
 </form>
 
 <!-- 페이지 링크 표시 -->
-<div th:if="${list.totalPages >= 1}">
-  <ul class="pagination">
-    <li th:disabled="${list.number == 0} ? 'disabled'">
-      <a th:href="@{/list(page=0, keyword=${keyword})}">First</a>
-    </li>
-    <li th:disabled="${list.number + 1 == list.totalPages} ? 'disabled'">
-      <a th:href="${previousPageLink}">이전</a>
-    </li>
-    <li th:each="pageNumber : ${#numbers.sequence(start, end)}"
-        th:if="${pageNumber >= 0 && pageNumber < list.totalPages}"
-        th:class="${pageNumber == list.number} ? 'active'">
-      <a th:href="@{/list(page=${pageNumber}, keyword=${keyword})}">
-        [[${pageNumber + 1}]]
-      </a>
-    </li>
-    <li th:disabled="${list.number + 1 == list.totalPages} ? 'disabled'">
-      <a th:href="${nextPageLink}">다음</a>
-    </li>
-    <li th:disabled="${list.number + 1 == list.totalPages} ? 'disabled'">
-      <a th:href="@{/list(page=${list.totalPages - 1}, keyword=${keyword})}">Last</a>
-    </li>
-  </ul>
+<div th:with="start=${(list.number / maxPage) * maxPage + 1},
+  end=(${(list.totalPages == 0) ? 1 : (start + (maxPage - 1) < list.totalPages ? start + (maxPage - 1) : list.totalPages)})">
+    <ul class="pagination">
+      <li th:classappend="${list.number eq 0} ? 'disabled' : ''">
+        <a th:href="@{/list(page=${list.number - 1}, keyword=${keyword})}">이전</a>
+      </li>
+      <li th:each="page : ${#numbers.sequence(start, end)}"
+      th:classappend="${list.number eq page - 1} ? 'active' : ''">
+        <a th:href="@{/list(page=${page - 1}, keyword=${keyword})}" th:inline="text">[[${page}]]</a>
+      </li>
+      <li th:classappend="${list.number + 1 ge list.totalPages} ? 'disabled' : ''">
+        <a th:href="@{/list(page=${list.number + 1}, keyword=${keyword})}">다음</a>
+      </li>
+    </ul>
 </div>
   <a th:href="@{/save}">등록하기</a>
 </body>
