@@ -2,7 +2,6 @@ package com.example.demo.config;
 
 import com.example.demo.board.Board;
 import com.example.demo.board.BoardRepository;
-import com.example.demo.board.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

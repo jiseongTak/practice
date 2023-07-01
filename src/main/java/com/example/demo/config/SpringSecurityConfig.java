@@ -37,10 +37,10 @@ public class SpringSecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http, PasswordEncoder encoder, UserDetailService userDetailService) throws Exception {
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
                 .userDetailsService(userService)
-                .passwordEncoder(encoder)
+                .passwordEncoder(passwordEncoder())
                 .and()
                 .build();
     }
