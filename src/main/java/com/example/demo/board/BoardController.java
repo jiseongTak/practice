@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -31,39 +31,11 @@ public class BoardController {
     public String list(@RequestParam(defaultValue = "0") int page,
                        @RequestParam(required = false) String keyword,
                        Model model) {
-        int pageSize = 8; // 페이지당 아이템 개수
-        int blockPageSize = 5; // 한 블록에 보여질 페이지 번호 개수
-        int blockNumber = page / blockPageSize; // 현재 블록 번호
+        Pageable pageable = PageRequest.of(page, 10);
 
-        PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id"));
-        Page<Board> pagedFindList = boardService.searchBoardsByKeyword(keyword, pageRequest);
-
-        int totalPages = pagedFindList.getTotalPages(); // 전체 페이지 개수
-        int endPageNumber = (totalPages - 1) / pageSize;
-
-        // 다음 페이징 블록의 시작 페이지 번호 계산
-        int nextStartPageNumber = (endPageNumber / blockPageSize + 1) * blockPageSize;
-
-        // 현재 페이징 블록의 시작 페이지 번호 계산
-        int startPageNumber = (page / blockPageSize) * blockPageSize;
-
-        // 이전 페이징 블록의 마지막 페이지 번호 계산
-        int previousEndPageNumber = startPageNumber < 1 ? 0 : startPageNumber - 1;
-
-        // 이전 페이징 블록으로 이동하는 링크 생성
-        String previousPageLink = "/list?page=" + previousEndPageNumber;
-
-        // 다음 페이징 블록으로 이동하는 링크 생성
-        String nextPageLink = "/list?page=" + nextStartPageNumber;
-
-        log.info("BoardController list {}", pagedFindList.getTotalPages());
-
-        model.addAttribute("end", blockNumber * blockPageSize + 4);
-        model.addAttribute("start", blockNumber * blockPageSize);
-        model.addAttribute("nextPageLink", nextPageLink);
-        model.addAttribute("previousPageLink", previousPageLink);
-        model.addAttribute("list", pagedFindList);
-        model.addAttribute("keyword", keyword);
+        Page<Board> boards = boardService.searchBoardsByKeyword(keyword, pageable);
+        model.addAttribute("boards", boards);
+        model.addAttribute("maxPage", 5);
 
         return "list";
     }
@@ -109,5 +81,4 @@ public class BoardController {
         boardRepository.delete(board);
         return "redirect:/list";
     }
-
 }
