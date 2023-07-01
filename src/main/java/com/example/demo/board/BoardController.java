@@ -24,7 +24,7 @@ public class BoardController {
 
     @RequestMapping("/")
     public String index() {
-        return "hello";
+        return "login";
     }
 
     @GetMapping("/list")
