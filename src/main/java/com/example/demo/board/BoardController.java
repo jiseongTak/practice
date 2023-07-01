@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -31,11 +32,15 @@ public class BoardController {
     public String list(@RequestParam(defaultValue = "0") int page,
                        @RequestParam(required = false) String keyword,
                        Model model) {
-        Pageable pageable = PageRequest.of(page, 10);
+        int pageSize = 8; // 페이지당 아이템 개수
 
-        Page<Board> boards = boardService.searchBoardsByKeyword(keyword, pageable);
-        model.addAttribute("boards", boards);
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        Page<Board> pagedFindList = boardService.searchBoardsByKeyword(keyword, pageable);
+
+        model.addAttribute("list", pagedFindList);
+        model.addAttribute("page", pageable.getPageNumber());
         model.addAttribute("maxPage", 5);
+        model.addAttribute("keyword", keyword);
 
         return "list";
     }

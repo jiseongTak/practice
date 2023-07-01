@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 @Slf4j
 @Service
@@ -17,12 +16,12 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
 
-    public Page<Board> searchBoardsByKeyword(String keyword, Pageable pageRequest) {
+    public Page<Board> searchBoardsByKeyword(String keyword, Pageable pageable) {
         log.info("BoardService searchBoardsByKeyword keyword >> {}", keyword);
         if (ObjectUtils.isEmpty(keyword)) {
-            return boardRepository.findAll(pageRequest);
+            return boardRepository.findAll(pageable);
         } else {
-            return boardRepository.findByTitleContaining(keyword, pageRequest);
+            return boardRepository.findByTitleContaining(keyword, pageable);
         }
     }
 }

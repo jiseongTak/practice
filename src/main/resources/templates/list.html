@@ -54,7 +54,7 @@
       <th>제목</th>
       <th>내용</th>
     </tr>
-    <tr th:each="board : ${boards}">
+    <tr th:each="board : ${list.content}">
       <td th:text="${board.id}"></td>
       <td>
         <a th:href="@{/board(id=${board.id})}" th:text="${board.title}"></a>
@@ -64,35 +64,27 @@
   </table><br>
 
 <form action="#" th:action="@{/list}" method="get">
+
   <input type="text" name="keyword" th:value="${keyword}" placeholder="검색어를 입력하세요">
   <button type="submit">검색</button>
 </form>
 
 <!-- 페이지 링크 표시 -->
-<div th:with="start=${(boards.number/maxPage)*maxPage + 1}, end=(${boards.totalPages == 0 ?
- 1 : (start + (maxPage -1) < boards.totalPages ? start + (maxPage -1) : boards.totalPages)})">
-  <ul class="pagination">
-    <li th:classappend="${boards.first} ? 'disabled'">
-      <a th:href="@{/list(page=${boards.number - 1}, keyword=${keyword})}">
-        <
-      </a>
-    </li>
-
-    <li th:each="pageNumber : ${#numbers.sequence(start, end)}"
-        th:classappend="${boards.number eq pageNumber - 1} ? 'active' : ''">
-      <a th:href="@{/list(page=${pageNumber - 1}, keyword=${keyword})}">
-        [[${pageNumber}]]
-      </a>
-    </li>
-
-    <li th:classappend="${boards.last} ? 'disabled'">
-      <a th:href="@{/list(page=${boards.number + 1}, keyword=${keyword})}">
-        >
-      </a>
-    </li>
-  </ul>
+<div th:with="start=${(list.number / maxPage) * maxPage + 1},
+  end=(${(list.totalPages == 0) ? 1 : (start + (maxPage - 1) < list.totalPages ? start + (maxPage - 1) : list.totalPages)})">
+    <ul class="pagination">
+      <li th:classappend="${list.number eq 0} ? 'disabled' : ''">
+        <a th:href="@{/list(page=${list.number - 1}, keyword=${keyword})}">이전</a>
+      </li>
+      <li th:each="page : ${#numbers.sequence(start, end)}"
+      th:classappend="${list.number eq page - 1} ? 'active' : ''">
+        <a th:href="@{/list(page=${page - 1}, keyword=${keyword})}" th:inline="text">[[${page}]]</a>
+      </li>
+      <li th:classappend="${list.number + 1 ge list.totalPages} ? 'disabled' : ''">
+        <a th:href="@{/list(page=${list.number + 1}, keyword=${keyword})}">다음</a>
+      </li>
+    </ul>
 </div>
-
   <a th:href="@{/save}">등록하기</a>
 </body>
 </html>
